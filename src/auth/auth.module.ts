@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { UsersModule } from 'src/users/users.module';
+import { UsersModule } from '../users/users.module';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.stategy';
 import { LocalStrategy } from './local.strategy';
 import { AuthController } from './auth.controller';
 import { ConfigService } from '@nestjs/config';
+import { GoogleOAuth2Strategy } from './google-oauth2.strategy';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { ConfigService } from '@nestjs/config';
       }),
     }),
   ],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy, GoogleOAuth2Strategy],
   exports: [AuthService],
   controllers: [AuthController],
 })

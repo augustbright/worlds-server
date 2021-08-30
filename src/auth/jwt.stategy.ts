@@ -4,8 +4,8 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 export interface JwtPayload {
-  sub: number;
-  username: string;
+  sub: string;
+  username?: string;
 }
 
 @Injectable()

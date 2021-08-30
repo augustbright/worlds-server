@@ -1,28 +1,54 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Document, Model } from 'mongoose';
+import { GoogleProfile } from 'src/auth/types';
 
-// This should be a real class/interface representing a user entity
 export interface User {
-  userId: number;
-  username: string;
-  password: string;
+  _id: string;
+  username?: string;
+  password?: string;
+
+  googleId?: string;
 }
 
 @Injectable()
 export class UsersService {
   private readonly users = [
     {
-      userId: 1,
+      _id: '1',
       username: 'john',
       password: 'changeme',
     },
     {
-      userId: 2,
+      _id: '2',
       username: 'maria',
       password: 'guess',
     },
   ];
 
+  constructor(
+    @InjectModel('user') private readonly UserModel: Model<Document & User>,
+  ) {}
+
   async findOne(username: string): Promise<User | undefined> {
     return this.users.find((user) => user.username === username);
+  }
+
+  async oauth(profile: GoogleProfile): Promise<User> {
+    const found = await this.UserModel.findOne({
+      googleId: profile.id,
+    }).exec();
+    let user = found;
+
+    if (!found) {
+      const created = await this.UserModel.create({ googleId: profile.id });
+      user = created;
+    }
+
+    return {
+      _id: user._id.toString(),
+      googleId: user.googleId,
+      username: user.username,
+    };
   }
 }
