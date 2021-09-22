@@ -5,7 +5,10 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { typeSchema } from './types.schema';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: 'type', schema: typeSchema }])],
+  imports: [
+    MongooseModule.forFeature([{ name: 'type', schema: typeSchema }]),
+    MongooseModule.forFeature([{ name: 'external-type', schema: typeSchema }]),
+  ],
   providers: [TypesService],
   controllers: [TypesController],
 })

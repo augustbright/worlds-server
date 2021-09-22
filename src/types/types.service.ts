@@ -7,6 +7,8 @@ import { TypeDto, Type } from './types';
 export class TypesService {
   constructor(
     @InjectModel('type') private readonly TypeModel: Model<Document & Type>,
+    @InjectModel('external-type')
+    private readonly ExternalTypeModel: Model<Document & Type>,
   ) {}
   async update(typeDto: TypeDto, authorId: string) {
     if (typeDto._id) {
@@ -33,5 +35,25 @@ export class TypesService {
       _id,
       authorId,
     });
+  }
+
+  async publish(typeDto: TypeDto, authorId: string) {
+    const created = await this.ExternalTypeModel.create({
+      name: typeDto.name,
+      body: typeDto.body,
+      authorId,
+    });
+    return created._id;
+  }
+
+  async query(query: string) {
+    return this.ExternalTypeModel.find({
+      $or: [
+        { $text: { $search: query } },
+        { name: new RegExp(`.*${query}.*`) },
+      ],
+    })
+      .limit(20)
+      .exec();
   }
 }

@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -33,5 +34,17 @@ export class TypesController {
   @UseGuards(JwtAuthGuard)
   async delete(@Req() req: Request, @Param('id') id: string) {
     return this.typesService.delete(id, req.user.sub);
+  }
+
+  @Post('/external')
+  @UseGuards(JwtAuthGuard)
+  async publish(@Body() typeDto: TypeDto, @Req() req: Request) {
+    return this.typesService.publish(typeDto, req.user.sub);
+  }
+
+  @Get('/external')
+  @UseGuards(JwtAuthGuard)
+  async search(@Req() req: Request, @Query('query') query: string) {
+    return this.typesService.query(query);
   }
 }
