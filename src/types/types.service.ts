@@ -50,10 +50,14 @@ export class TypesService {
     return this.ExternalTypeModel.find({
       $or: [
         { $text: { $search: query } },
-        { name: new RegExp(`.*${query}.*`) },
+        { name: new RegExp(`.*${query}.*`, 'i') },
       ],
     })
       .limit(20)
       .exec();
+  }
+
+  async getExternal(_id: string) {
+    return this.ExternalTypeModel.findById(_id).exec();
   }
 }

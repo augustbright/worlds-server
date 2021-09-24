@@ -47,4 +47,10 @@ export class TypesController {
   async search(@Req() req: Request, @Query('query') query: string) {
     return this.typesService.query(query);
   }
+
+  @Get('/external/:id')
+  @UseGuards(JwtAuthGuard)
+  async getExternal(@Req() req: Request, @Param('id') id: string) {
+    return this.typesService.getExternal(id);
+  }
 }
