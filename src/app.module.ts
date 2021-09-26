@@ -4,6 +4,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { TypesModule } from './types/types.module';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { MongooseModule } from '@nestjs/mongoose';
         dbName: configService.get<string>('MONGO_DB_NAME'),
       }),
     }),
+    ProfileModule,
   ],
   controllers: [],
   providers: [],
