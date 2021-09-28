@@ -11,5 +11,6 @@ import { typeSchema } from './types.schema';
   ],
   providers: [TypesService],
   controllers: [TypesController],
+  exports: [TypesService],
 })
 export class TypesModule {}

@@ -5,6 +5,7 @@ import { UsersModule } from './users/users.module';
 import { TypesModule } from './types/types.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ProfileModule } from './profile/profile.module';
+import { DescriptorsModule } from './descriptors/descriptors.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ProfileModule } from './profile/profile.module';
       }),
     }),
     ProfileModule,
+    DescriptorsModule,
   ],
   controllers: [],
   providers: [],

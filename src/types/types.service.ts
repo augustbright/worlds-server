@@ -1,6 +1,9 @@
+// TODO use sessions
+
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Document, Model } from 'mongoose';
+import { Document, Model, ObjectId } from 'mongoose';
+import { Orderable } from 'src/descriptors/types';
 import { TypeDto, Type } from './types';
 
 @Injectable()
@@ -21,13 +24,29 @@ export class TypesService {
         name: typeDto.name,
         body: typeDto.body,
         authorId,
+        order: typeDto.order,
       });
       return created._id;
     }
   }
 
+  async rearrange(items: Array<Orderable>, authorId: string) {
+    return Promise.all(
+      items.map((item) =>
+        this.TypeModel.updateOne(
+          { _id: item._id, authorId },
+          { $set: { order: item.order } },
+        ).exec(),
+      ),
+    );
+  }
+
   async getAll(authorId: string) {
-    return this.TypeModel.find({ authorId }).exec();
+    return this.TypeModel.find({ authorId })
+      .sort({
+        order: 'asc',
+      })
+      .exec();
   }
 
   async delete(_id: string, authorId: string) {
