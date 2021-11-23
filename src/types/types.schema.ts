@@ -7,6 +7,8 @@ const typeSchema = new mongoose.Schema({
   name: mongoose.Schema.Types.String,
   body: mongoose.Schema.Types.Mixed,
   order: mongoose.Schema.Types.Number,
+  deleted: mongoose.Schema.Types.Boolean,
+  packageId: mongoose.Schema.Types.ObjectId,
 });
 
 typeSchema.index({ name: 'text' });

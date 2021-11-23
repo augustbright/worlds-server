@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { TypeDto } from './types';
+import { GetAllQuery, TypeDto } from './types';
 import { TypesService } from './types.service';
 
 @Controller('types')
@@ -26,8 +26,8 @@ export class TypesController {
 
   @Get('/')
   @UseGuards(JwtAuthGuard)
-  async getAll(@Req() req: Request) {
-    return this.typesService.getAll(req.user.sub);
+  async getAll(@Req() req: Request, @Query() query: GetAllQuery) {
+    return this.typesService.getAll(req.user.sub, query);
   }
 
   @Delete('/:id')

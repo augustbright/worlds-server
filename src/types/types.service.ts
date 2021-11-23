@@ -2,9 +2,10 @@
 
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Document, Model, ObjectId } from 'mongoose';
+import { Document, Model } from 'mongoose';
 import { Orderable } from 'src/descriptors/types';
-import { TypeDto, Type } from './types';
+import { definedObject } from 'src/funcs/common';
+import { TypeDto, Type, GetAllQuery } from './types';
 
 @Injectable()
 export class TypesService {
@@ -17,7 +18,13 @@ export class TypesService {
     if (typeDto._id) {
       await this.TypeModel.updateOne(
         { _id: typeDto._id, authorId },
-        { $set: { name: typeDto.name, body: typeDto.body } },
+        {
+          $set: definedObject({
+            name: typeDto.name,
+            body: typeDto.body,
+            packageId: typeDto.packageId,
+          }),
+        },
       ).exec();
     } else {
       const created = await this.TypeModel.create({
@@ -25,6 +32,7 @@ export class TypesService {
         body: typeDto.body,
         authorId,
         order: typeDto.order,
+        packageId: typeDto.packageId,
       });
       return created._id;
     }
@@ -41,14 +49,28 @@ export class TypesService {
     );
   }
 
-  async getAll(authorId: string) {
-    return this.TypeModel.find({ authorId })
+  async getAll(authorId: string, query: GetAllQuery) {
+    return this.TypeModel.find(
+      definedObject({
+        authorId,
+        packageId: query.packageId,
+      }),
+    )
       .sort({
         order: 'asc',
       })
       .exec();
   }
 
+  async archieve(_id: string, authorId: string) {
+    await this.TypeModel.updateOne(
+      {
+        _id,
+        authorId,
+      },
+      { $set: { deleted: true } },
+    );
+  }
   async delete(_id: string, authorId: string) {
     await this.TypeModel.deleteOne({
       _id,
